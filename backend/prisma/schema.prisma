@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -10,4 +5,68 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum GameMode {
+  CLASSIC_60S
+  SPRINT_10S
+  MARATHON_120S
+}
+
+enum SessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  INVALIDATED
+  EXPIRED
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions GameSession[]
+  scores   Score[]
+
+  @@map("users")
+}
+
+model GameSession {
+  id         String        @id @default(uuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode       GameMode
+  status     SessionStatus @default(IN_PROGRESS)
+  startedAt  DateTime      @default(now())
+  endedAt    DateTime?
+  clickCount Int          @default(0)
+
+  lastClickAt DateTime?
+
+  score Score?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("game_sessions")
+}
+
+model Score {
+  id         String   @id @default(uuid())
+  sessionId  String   @unique
+  session    GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode       GameMode
+  clickCount Int
+  durationMs Int
+  cps        Float
+  createdAt  DateTime @default(now())
+
+  @@index([mode, createdAt])
+  @@index([userId, mode])
+  @@map("scores")
 }
