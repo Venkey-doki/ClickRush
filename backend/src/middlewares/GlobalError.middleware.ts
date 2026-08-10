@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { env } from "../config/env";
 import ApiError from "../utils/ApiError";
 
-export const globalErrorHandler: ErrorRequestHandler = (
+const globalErrorHandler: ErrorRequestHandler = (
 	err,
 	_req,
 	res,
@@ -38,3 +38,5 @@ export const globalErrorHandler: ErrorRequestHandler = (
 		}),
 	});
 };
+
+export default globalErrorHandler;
