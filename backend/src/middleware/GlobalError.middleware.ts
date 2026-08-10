@@ -1,4 +1,6 @@
 import type { ErrorRequestHandler } from "express";
+import { ZodError } from "zod";
+import { env } from "../config/env";
 import ApiError from "../utils/ApiError";
 
 export const globalErrorHandler: ErrorRequestHandler = (
@@ -7,7 +9,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
 	res,
 	_next,
 ) => {
-	const isDevelopment = process.env.NODE_ENV !== "production";
+	const isDevelopment = env.nodeEnv !== "production";
 
 	let statusCode = 500;
 	let message = "Internal Server Error";
@@ -17,7 +19,13 @@ export const globalErrorHandler: ErrorRequestHandler = (
 		statusCode = err.statusCode;
 		message = err.message;
 		errors = err.errors;
-	}
+    }
+
+    if(err instanceof ZodError) {
+        statusCode = 400;
+        message = "Validation Error";
+        errors = err.issues.map(e => ({ path: e.path, message: e.message }));
+    }
 
 	console.error(err);
 
