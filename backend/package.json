@@ -4,7 +4,19 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "bun --watch src/app.ts"
+		"dev": "bun --watch src/app.ts",
+		"start": "bun run dist/app.js",
+		"build": "bun build src/app.ts --outdir dist --target bun",
+		"prisma:generate": "bunx prisma generate",
+		"prisma:migrate:dev": "bunx prisma migrate dev",
+		"prisma:migrate:deploy": "bunx prisma migrate deploy",
+		"prisma:migrate:reset": "bunx prisma migrate reset",
+		"prisma:migrate:status": "bunx prisma migrate status",
+		"prisma:db:seed": "bunx prisma db seed",
+		"prisma:studio": "bunx prisma studio",
+		"prisma:format": "bunx prisma format",
+		"prisma:validate": "bunx prisma validate",
+		"db:push": "bunx prisma db push"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^6.0.0",
