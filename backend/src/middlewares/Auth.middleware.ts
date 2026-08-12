@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import ApiError from "../utils/ApiError";
 import { verifyAccessToken } from "../utils/jwt";
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
     user?: { userId: string; username: string };
 }
 

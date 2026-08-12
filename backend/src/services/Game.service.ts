@@ -1,7 +1,6 @@
 import { GameMode } from "../../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import { redisClient, leaderBoardKeys } from "../lib/redis";
-import ApiResponse from "../utils/ApiResponse";
 import ApiError from "../utils/ApiError";
 import {
 	GAME_MODE_DURATION_MS,
@@ -238,8 +237,38 @@ const getLeaderboard = async (
     const userMap = new Map(users.map(user => [user.id, user.username]));
 
     return userIds.map((userId, index) => ({
+        rank: index + 1,
         userId,
         username: userMap.get(userId) || "Unknown",
         score: scoreByUserId[userId],
     }));
 };
+
+const getUserRank = async (
+    userId: string,
+    mode: GameMode,
+    period: "daily" | "weekly" | "global",
+) => { 
+    const key =
+		period === "daily"
+			? leaderBoardKeys.daily(mode, todayKey())
+			: period === "weekly"
+				? leaderBoardKeys.weekly(mode, isoWeekKey())
+                : leaderBoardKeys.global(mode);
+
+    const rank = await redisClient.zrevrank(key, userId);
+    const score = await redisClient.zscore(key, userId);
+
+    if (rank === null || score === null) {
+        return null;
+    }
+
+    return {
+        rank: rank + 1,
+        userId,
+        score: parseInt(score, 10),
+    };
+
+}
+
+export { startGameSession, clickBatch, endGameSession, getLeaderboard, getUserRank };
