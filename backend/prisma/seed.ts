@@ -64,6 +64,10 @@ const seedUsers = [
 async function main() {
 	await prisma.$connect();
 
+	await prisma.score.deleteMany();
+	await prisma.gameSession.deleteMany();
+	await prisma.user.deleteMany();
+
 	for (const seedUser of seedUsers) {
 		const user = await prisma.user.upsert({
 			where: { email: seedUser.email },
