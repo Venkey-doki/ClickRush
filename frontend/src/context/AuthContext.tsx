@@ -1,12 +1,6 @@
 import { useContext, createContext, useState, type ReactNode } from "react";
 import api from "../lib/api";
-
-interface AuthedUser {
-  id: string;
-  username: string;
-  email: string;
-}
-
+import type { AuthedUser } from "../types/user";
 interface AuthContextType {
     user: AuthedUser | null
     login: (emailOrUsername: string, password: string) => Promise<void>
