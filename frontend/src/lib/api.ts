@@ -1,55 +1,84 @@
 import axios from "axios"
 
 const api = axios.create({
-  baseURL: import.meta.env.API_URL,
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000/api",
 })
 
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("AccessToken")
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
+    (config) => {
+        const token = localStorage.getItem("AccessToken")
+
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+        }
+
+        return config
+    },
+    (error) => Promise.reject(error)
 )
 
-// Add a response interceptor to handle 401 errors by making a request to the refresh token endpoint and retrying the original request
 api.interceptors.response.use(
-  (response) => {
-    return response
-  },
-  async (error) => {
-    if (error.response && error.response.status === 401) {
-      const originalRequest = error.config
+    (response) => response,
 
-      if (error.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true
-        const refreshToken = localStorage.getItem("RefreshToken")
-        if (refreshToken) {
-          try {
-            const response = await axios.post(
-              `${import.meta.env.API_URL}/auth/refresh`,
-              { refreshToken }
-            )
-            const newAccessToken = response.data.accessToken
-            const newRefreshToken = response.data.refreshToken
-            localStorage.setItem("RefreshToken", newRefreshToken)
-            localStorage.setItem("AccessToken", newAccessToken)
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-            return api(originalRequest)
-          } catch (refreshError) {
-            console.error("Refresh token request failed:", refreshError)
-            // Optionally, you can log the user out or redirect to the login page here
-          }
+    async (error) => {
+        const originalRequest = error.config
+
+        if (!error.response) {
+            return Promise.reject(error)
         }
-      }
+
+        // Only handle 401 responses
+        if (error.response.status !== 401) {
+            return Promise.reject(error)
+        }
+
+        // Don't refresh on auth endpoints
+        if (
+            originalRequest.url?.includes("/auth/login") ||
+            originalRequest.url?.includes("/auth/refresh")
+        ) {
+            return Promise.reject(error)
+        }
+
+        // Prevent infinite retry loop
+        if (originalRequest._retry) {
+            return Promise.reject(error)
+        }
+
+        originalRequest._retry = true
+
+        const refreshToken = localStorage.getItem("RefreshToken")
+
+        if (!refreshToken) {
+            return Promise.reject(error)
+        }
+
+        try {
+            const response = await axios.post(
+                `${api.defaults.baseURL}/auth/refresh`,
+                {
+                    refreshToken,
+                }
+            )
+
+            const {
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken,
+            } = response.data
+
+            localStorage.setItem("AccessToken", newAccessToken)
+            localStorage.setItem("RefreshToken", newRefreshToken)
+
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+
+            return api(originalRequest)
+        } catch (refreshError) {
+            localStorage.removeItem("AccessToken")
+            localStorage.removeItem("RefreshToken")
+
+            return Promise.reject(refreshError)
+        }
     }
-    return Promise.reject(error)
-  }
 )
 
 export default api

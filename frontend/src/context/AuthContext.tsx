@@ -8,10 +8,10 @@ interface AuthedUser {
 }
 
 interface AuthContextType {
-  user: AuthedUser | null;
-  login: (usernameOrEmail: string, password: string) => Promise<void>;
-  signup: (username: string, email: string, password: string) => Promise<void>;
-  logout: (refreshToken: string) => void;
+    user: AuthedUser | null
+    login: (emailOrUsername: string, password: string) => Promise<void>
+    signup: (username: string, email: string, password: string) => Promise<void>
+    logout: (refreshToken: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,14 +30,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(user);
     }
 
-    async function login(usernameOrEmail: string, password: string) {
+    async function login(emailOrUsername: string, password: string) {
         try {
-            const response = await api.post("/auth/login", { usernameOrEmail, password });
-            const { user, accessToken, refreshToken } = response.data.data;
-            persist(user, accessToken, refreshToken);
+            const response = await api.post("/auth/login", {
+                emailOrUsername,
+                password,
+            })
+            const { user, accessToken, refreshToken } = response.data.data
+            persist(user, accessToken, refreshToken)
         } catch (error) {
-            console.error("Login failed:", error);
-            throw error;
+            console.error("Login failed:", error)
+            throw error
         }
     }
 
