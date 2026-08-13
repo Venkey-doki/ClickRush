@@ -81,25 +81,41 @@ const refreshTokens = async (refreshToken: string) => {
 		throw new ApiError(401, "Invalid refresh token");
 	}
 
-	const user = await prisma.user.findUnique({
-		where: { id: payload.userId },
-	});
+	try {
+		const user = await prisma.user.findUnique({
+			where: { id: payload.userId },
+		});
 
-	if (!user) {
+		const isRefreshTokenAlive = verifyRefreshToken(user?.refreshToken || "");
+
+		if (!isRefreshTokenAlive) {
+			throw new ApiError(401, "Refresh token has expired");
+		}
+
+		if (user?.refreshToken !== refreshToken) {
+			throw new ApiError(401, "Refresh token does not match");
+		}
+
+		const tokens = await issueTokens(user.id, user.username);
+
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { refreshToken: tokens.refreshToken },
+		});
+
+		const publicUser = {
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt,
+		};
+
+		return { user: publicUser, ...tokens };
+
+	} catch (err) { 
 		throw new ApiError(401, "User not found");
 	}
-
-	const tokens = await issueTokens(user.id, user.username);
-
-	const publicUser = {
-		id: user.id,
-		email: user.email,
-		username: user.username,
-		createdAt: user.createdAt,
-		updatedAt: user.updatedAt,
-	};
-
-	return { user: publicUser, ...tokens };
 };
 
 const logOut = async (refreshToken: string) => {
