@@ -19,7 +19,7 @@ const startGameSession = async (userId: string, gameMode: GameMode) => {
 		data: {
 			userId,
 			mode: gameMode,
-			startTime: new Date(),
+			startedAt: new Date(),
 		},
 	});
 
@@ -86,7 +86,7 @@ const clickBatch = async (
 	const updatedSession = await prisma.gameSession.update({
 		where: { id: sessionId },
 		data: {
-			clicks: { increment: clicks },
+			clickCount: { increment: clicks },
 			lastClickAt: now,
 		},
 	});
@@ -143,7 +143,7 @@ const endGameSession = async (userId: string, sessionId: string) => {
 			data: {
 				status: "COMPLETED",
 				endedAt: now,
-				cps,
+				clickCount: session.clickCount,
 			},
 		}),
 		prisma.score.create({
