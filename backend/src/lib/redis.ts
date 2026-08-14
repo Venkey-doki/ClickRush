@@ -6,6 +6,8 @@ export const redisClient = new Redis(env.redisUrl, {
 	lazyConnect: true,
 });
 
+await redisClient.set("foo", "bar");
+
 redisClient.on("connect", () => {
     console.log("Redis client connected");
 });
