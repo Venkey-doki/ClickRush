@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react"
+import { useAuth } from "../context/AuthContext"
+import api from "../lib/api"
 import type {
     ApiResponse,
     UserHistoryEntry,
     UserHistoryResponse,
 } from "../types/user"
 import { Button } from "./ui/button"
-import { useState, useEffect } from "react"
-import { useAuth } from "../context/AuthContext"
-import api from "../lib/api"
 
 const formatModeLabel = (mode: string) => {
     const map: Record<string, string> = {
@@ -29,7 +29,6 @@ function GameHistory() {
     const [userHistory, setUserHistory] = useState<UserHistoryEntry[]>([])
 
     useEffect(() => {
-
         if (!user) {
             setUserHistory([])
             return
@@ -50,34 +49,8 @@ function GameHistory() {
         fetchUserHistory()
     }, [user])
 
-    if (!userHistory.length) {
-        return (
-            <div className="col-span-3 mt-4 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6 m-4">
-                <div className="mb-3 flex items-center justify-between gap-2">
-                    <div>
-                        <p className="text-sm font-semibold text-foreground">
-                            Recent games
-                        </p>
-                    </div>
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-[11px] text-muted-foreground"
-                    >
-                        View all
-                    </Button>
-                </div>
-
-                <div className="rounded-xl border border-dashed border-border bg-background/70 px-4 py-8 text-center text-sm text-muted-foreground">
-                    No games played yet.
-                </div>
-            </div>
-        )
-    }
-
     return (
-        <div className="col-span-3 mt-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6 m-4">
+        <div className="m-4 flex min-h-0 flex-1 flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
             <div className="mb-4 flex items-center justify-between gap-2">
                 <div>
                     <p className="text-sm font-semibold text-foreground">
@@ -94,41 +67,51 @@ function GameHistory() {
                 </Button>
             </div>
 
-            <div className="space-y-2">
-                {userHistory.slice(0, 5).map((entry) => (
-                    <div
-                        key={entry.id}
-                        className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/70 px-3 py-3"
-                    >
-                        <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                                <span className="inline-flex rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium tracking-[0.12em] text-foreground uppercase">
-                                    {formatModeLabel(entry.mode)}
-                                </span>
-                                <span className="text-[11px] text-muted-foreground">
-                                    {new Date(
-                                        entry.createdAt
-                                    ).toLocaleDateString(undefined, {
-                                        month: "short",
-                                        day: "numeric",
-                                    })}
-                                </span>
-                            </div>
-
-                            <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
-                                <span>{entry.clickCount} clicks</span>
-                                <span>{entry.cps.toFixed(2)} CPS</span>
-                                <span>{formatDuration(entry.durationMs)}</span>
-                            </div>
-                        </div>
-
-                        <div className="text-right">
-                            <p className="font-mono text-sm font-semibold text-foreground">
-                                #{entry.clickCount}
-                            </p>
-                        </div>
+            <div className="flex min-h-0 flex-1 flex-col">
+                {!userHistory.length ? (
+                    <div className="flex h-full items-center justify-center rounded-xl border border-dashed border-border bg-background/70 px-4 py-8 text-center text-sm text-muted-foreground">
+                        No games played yet.
                     </div>
-                ))}
+                ) : (
+                    <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+                        {userHistory.map((entry) => (
+                            <div
+                                key={entry.id}
+                                className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/70 px-3 py-3"
+                            >
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-2">
+                                        <span className="inline-flex rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium tracking-[0.12em] text-foreground uppercase">
+                                            {formatModeLabel(entry.mode)}
+                                        </span>
+                                        <span className="text-[11px] text-muted-foreground">
+                                            {new Date(
+                                                entry.createdAt
+                                            ).toLocaleDateString(undefined, {
+                                                month: "short",
+                                                day: "numeric",
+                                            })}
+                                        </span>
+                                    </div>
+
+                                    <div className="mt-1 flex items-center gap-3 text-[11px] text-muted-foreground">
+                                        <span>{entry.clickCount} clicks</span>
+                                        <span>{entry.cps.toFixed(2)} CPS</span>
+                                        <span>
+                                            {formatDuration(entry.durationMs)}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="text-right">
+                                    <p className="font-mono text-sm font-semibold text-foreground">
+                                        #{entry.clickCount}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     )
