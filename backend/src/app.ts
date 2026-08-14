@@ -39,8 +39,8 @@ app.use("/api", apiRoutes);
 
 app.use(globalErrorHandler);
 
-// app.listen(env.port, () => {
-// 	console.log(`Server is running on port http://localhost:${env.port}`);
-// });
+app.listen(env.port, () => {
+	console.log(`Server is running on port http://localhost:${env.port}`);
+});
 
 export default app;
