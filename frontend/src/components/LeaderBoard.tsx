@@ -16,7 +16,7 @@ import type {
     LeaderboardMode,
     LeaderboardPeriod,
 } from "../types/leaderboard";
-import { Button } from "./ui/button";
+// import { Button } from "./ui/button";
 
 const MODES: { key: LeaderboardMode; label: string; icon: typeof Target }[] = [
     { key: "CLASSIC_60S", label: "Classic", icon: Target },

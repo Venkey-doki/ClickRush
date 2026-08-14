@@ -6,7 +6,7 @@ import type {
     UserHistoryEntry,
     UserHistoryResponse,
 } from "../types/user"
-import { Button } from "./ui/button"
+// import { Button } from "./ui/button"
 
 const formatModeLabel = (mode: string) => {
     const map: Record<string, string> = {
