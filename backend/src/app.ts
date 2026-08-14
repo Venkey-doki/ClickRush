@@ -6,7 +6,12 @@ import apiRoutes from "./routes";
 
 const app = express();
 
-app.use(cors());
+app.use(
+	cors({
+		origin: env.corsOrigin,
+		credentials: true,
+	}),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -14,9 +19,9 @@ app.get("/health", (req, res) => {
 	res.send("Hello, World!");
 });
 
-app.use((req, _res, next) => { 
+app.use((req, _res, next) => {
 	//request logger middleware
-	console.log("\n new request received")
+	console.log("\n new request received");
 	//indian time zone
 	const indianTime = new Date().toLocaleString("en-IN");
 	console.log("Request received at:", indianTime);
@@ -26,7 +31,7 @@ app.use((req, _res, next) => {
 	console.log("Request query:", req.query);
 	console.log("Request params:", req.params);
 	next();
-})
+});
 
 app.use("/api", apiRoutes);
 
