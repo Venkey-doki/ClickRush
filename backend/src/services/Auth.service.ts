@@ -13,6 +13,7 @@ const publicUserSelect = {
 	username: true,
 	createdAt: true,
 	updatedAt: true,
+	refreshToken: true,
 } as const;
 
 const signUp = async (email: string, username: string, password: string) => {
@@ -80,6 +81,7 @@ const logIn = async (loginId: string, password: string) => {
 
 const refreshTokens = async (refreshToken: string) => {
 	let payload: { userId: string };
+
 	try {
 		payload = verifyRefreshToken(refreshToken);
 	} catch {
@@ -88,6 +90,7 @@ const refreshTokens = async (refreshToken: string) => {
 
 	const user = await prisma.user.findUnique({
 		where: { id: payload.userId },
+		select: publicUserSelect,
 	});
 
 	if (!user || !user.refreshToken) {
@@ -112,12 +115,25 @@ const refreshTokens = async (refreshToken: string) => {
 
 	const tokens = await issueTokens(user.id, user.username);
 
-	await prisma.user.update({
-		where: { id: user.id },
+	const result = await prisma.user.updateMany({
+		where: { id: user.id, refreshToken: user.refreshToken },
 		data: { refreshToken: tokens.refreshToken },
 	});
 
-	return { user: publicUserSelect, ...tokens };
+	if (result.count !== 1) {
+		throw new ApiError(401, "Refresh token has already been rotated");
+	}
+
+	return {
+		user: {
+			id: user.id,
+			email: user.email,
+			username: user.username,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt,
+		},
+		...tokens,
+	};
 };
 
 const logOut = async (refreshToken: string) => {
@@ -128,8 +144,8 @@ const logOut = async (refreshToken: string) => {
 		throw new ApiError(401, "Invalid refresh token");
 	}
 
-	await prisma.user.update({
-		where: { id: payload.userId },
+	await prisma.user.updateMany({
+		where: { id: payload.userId, refreshToken: refreshToken },
 		data: { refreshToken: null },
 	});
 };

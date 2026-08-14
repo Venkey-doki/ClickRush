@@ -50,13 +50,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     function logout(refreshToken: string) {
-        localStorage.removeItem("user");
-        localStorage.removeItem("AccessToken");
-        localStorage.removeItem("RefreshToken");
-        setUser(null);
-        api.post("/auth/logout", { refreshToken }).catch((error) => {
+
+        api.post("/auth/logout", { refreshToken }).then(() => { 
+            localStorage.removeItem("user")
+            localStorage.removeItem("AccessToken")
+            localStorage.removeItem("RefreshToken")
+            setUser(null)
+        }).catch((error) => {
             console.error("Logout failed:", error);
         });
+
     }
 
     return (
