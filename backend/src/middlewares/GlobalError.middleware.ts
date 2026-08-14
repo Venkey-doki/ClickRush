@@ -1,7 +1,7 @@
 import type { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
-import { env } from "../config/env";
-import ApiError from "../utils/ApiError";
+import { env } from "../config/env.ts";
+import ApiError from "../utils/ApiError.ts";
 
 const globalErrorHandler: ErrorRequestHandler = (
 	err,

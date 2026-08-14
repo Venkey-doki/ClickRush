@@ -1,5 +1,5 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
-import { env } from "../config/env";
+import { env } from "../config/env.ts";
 
 export interface AccessTokenPayload {
 	userId: string;

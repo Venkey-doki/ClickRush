@@ -2,9 +2,9 @@ import { Router } from "express";
 import {
 	getUserHistoryHandler,
 	getUserRankHandler,
-} from "../controllers/profile.controller";
-import { authenticateToken } from "../middlewares/Auth.middleware";
-import asyncRequestHandler from "../utils/AsyncHandler";
+} from "../controllers/profile.controller.ts";
+import { authenticateToken } from "../middlewares/Auth.middleware.ts";
+import asyncRequestHandler from "../utils/AsyncHandler.ts";
 
 const router = Router();
 

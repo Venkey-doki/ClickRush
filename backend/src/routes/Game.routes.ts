@@ -3,9 +3,9 @@ import {
 	clickBatchHandler,
 	endGameSessionHandler,
 	startGameSessionHandler,
-} from "../controllers/Game.controller";
-import { authenticateToken } from "../middlewares/Auth.middleware";
-import asyncRequestHandler from "../utils/AsyncHandler";
+} from "../controllers/Game.controller.ts";
+import { authenticateToken } from "../middlewares/Auth.middleware.ts";
+import asyncRequestHandler from "../utils/AsyncHandler.ts";
 
 const router = Router();
 

@@ -1,18 +1,18 @@
-import { GameMode } from "../../generated/prisma/client";
+import { GameMode } from "../../generated/prisma/client.ts";
 import {
 	END_SESSION_GRACE_MS,
 	GAME_MODE_DURATION_MS,
 	MAX_HUMAN_CPS,
-} from "../config/gameMode";
-import { prisma } from "../lib/prisma";
-import { leaderBoardKeys, redisClient } from "../lib/redis";
-import ApiError from "../utils/ApiError";
+} from "../config/gameMode.ts";
+import { prisma } from "../lib/prisma.ts";
+import { leaderBoardKeys, redisClient } from "../lib/redis.ts";
+import ApiError from "../utils/ApiError.ts";
 import {
 	isoWeekKey,
 	secondsUntilNextUtcDay,
 	secondsUntilNextUtcWeek,
 	todayKey,
-} from "../utils/periodKeys";
+} from "../utils/periodKeys.ts";
 
 const startGameSession = async (userId: string, gameMode: GameMode) => {
 	const session = await prisma.gameSession.create({

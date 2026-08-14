@@ -1,5 +1,5 @@
 import Redis from "ioredis";
-import { env } from "../config/env";
+import { env } from "../config/env.ts";
 
 export const redisClient = new Redis(env.redisUrl, {
 	maxRetriesPerRequest: 3,

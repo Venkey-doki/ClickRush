@@ -1,11 +1,11 @@
 import type { Response } from "express";
 import z from "zod";
-import type { AuthenticatedRequest } from "../middlewares/Auth.middleware";
-import { GameMode } from "../../generated/prisma/client";
-import ApiResponse from "../utils/ApiResponse";
-import ApiError from "../utils/ApiError";
-import { getUserRank } from "../services/Game.service";
-import { prisma } from "../lib/prisma";
+import type { AuthenticatedRequest } from "../middlewares/Auth.middleware.ts";
+import { GameMode } from "../../generated/prisma/client.ts";
+import ApiResponse from "../utils/ApiResponse.ts";
+import ApiError from "../utils/ApiError.ts";
+import { getUserRank } from "../services/Game.service.ts";
+import { prisma } from "../lib/prisma.ts";
 
 const rankSchema = z.object({
     mode: z.enum(GameMode),

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import ApiError from "../utils/ApiError";
-import { verifyAccessToken } from "../utils/jwt";
+import ApiError from "../utils/ApiError.ts";
+import { verifyAccessToken } from "../utils/jwt.ts";
 
 export interface AuthenticatedRequest extends Request {
     user?: { userId: string; username: string };

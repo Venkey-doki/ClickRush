@@ -1,8 +1,8 @@
 import cors from "cors";
 import express from "express";
 import { env } from "./config/env";
-import globalErrorHandler from "./middlewares/GlobalError.middleware";
-import apiRoutes from "./routes";
+import globalErrorHandler from "./middlewares/GlobalError.middleware.ts";
+import apiRoutes from "./routes/index.ts";
 
 const app = express();
 

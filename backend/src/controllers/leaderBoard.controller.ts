@@ -1,9 +1,9 @@
 import type { Response } from "express";
 import z from "zod";
-import { GameMode } from "../../generated/prisma/client";
-import type { AuthenticatedRequest } from "../middlewares/Auth.middleware";
-import { getLeaderboard } from "../services/Game.service";
-import ApiResponse from "../utils/ApiResponse";
+import { GameMode } from "../../generated/prisma/client.ts";
+import type { AuthenticatedRequest } from "../middlewares/Auth.middleware.ts";
+import { getLeaderboard } from "../services/Game.service.ts";
+import ApiResponse from "../utils/ApiResponse.ts";
 
 const leaderBoardSchema = z.object({
 	mode: z.enum(GameMode),

@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getLeaderboardHandler } from "../controllers/leaderBoard.controller";
-import asyncRequestHandler from "../utils/AsyncHandler";
+import { getLeaderboardHandler } from "../controllers/leaderBoard.controller.ts";
+import asyncRequestHandler from "../utils/AsyncHandler.ts";
 
 const router = Router();
 

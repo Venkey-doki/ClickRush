@@ -1,7 +1,7 @@
 import z from "zod";
 import type { Request, Response } from "express";
-import { refreshTokens, signUp, logIn, logOut} from "../services/Auth.service";
-import ApiResponse from "../utils/ApiResponse";
+import { refreshTokens, signUp, logIn, logOut} from "../services/Auth.service.ts";
+import ApiResponse from "../utils/ApiResponse.ts";
 
 const SignUpSchema = z.object({
 	email: z.string().email(),

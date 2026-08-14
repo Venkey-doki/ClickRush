@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
-import { prisma } from "../lib/prisma";
-import ApiError from "../utils/ApiError";
+import { prisma } from "../lib/prisma.ts";
+import ApiError from "../utils/ApiError.ts";
 import {
 	signAccessToken,
 	signRefreshToken,
 	verifyRefreshToken,
-} from "../utils/jwt";
+} from "../utils/jwt.ts";
 
 const publicUserSelect = {
 	id: true,

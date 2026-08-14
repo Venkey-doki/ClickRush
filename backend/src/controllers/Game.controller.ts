@@ -1,14 +1,14 @@
 import type { Response } from "express";
 import z from "zod";
-import type { AuthenticatedRequest } from "../middlewares/Auth.middleware";
-import { GameMode } from "../../generated/prisma/client";
-import ApiResponse from "../utils/ApiResponse";
-import ApiError from "../utils/ApiError";
+import type { AuthenticatedRequest } from "../middlewares/Auth.middleware.ts";
+import { GameMode } from "../../generated/prisma/client.ts";
+import ApiResponse from "../utils/ApiResponse.ts";
+import ApiError from "../utils/ApiError.ts";
 import {
 	startGameSession,
 	clickBatch,
 	endGameSession,
-} from "../services/Game.service";
+} from "../services/Game.service.ts";
 
 const startGameSessionSchema = z.object({
 	mode: z.enum(GameMode),

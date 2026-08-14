@@ -1,6 +1,6 @@
-import { prisma } from "../lib/prisma";
-import { leaderBoardKeys, redisClient } from "../lib/redis";
-import { GameMode } from "../../generated/prisma/client";
+import { prisma } from "../lib/prisma.ts";
+import { leaderBoardKeys, redisClient } from "../lib/redis.ts";
+import { GameMode } from "../../generated/prisma/client.ts";
 
 const reconstructLeaderboard = async () => {
 	for (const mode of Object.values(GameMode)) {

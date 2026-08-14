@@ -1,4 +1,4 @@
-import { GameMode } from "../../generated/prisma/client";
+import { GameMode } from "../../generated/prisma/client.ts";
 
 export const GAME_MODE_DURATION_MS: Record<GameMode, number> = {
 	CLASSIC_60S: 60_000,

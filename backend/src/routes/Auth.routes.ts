@@ -1,11 +1,11 @@
-import asyncRequestHandler from "../utils/AsyncHandler";
+import asyncRequestHandler from "../utils/AsyncHandler.ts";
 import { Router } from "express";
 import {
 	signup,
 	login,
 	refreshToken,
 	logout,
-} from "../controllers/Auth.controller";
+} from "../controllers/Auth.controller.ts";
 
 const router = Router();
 
