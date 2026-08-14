@@ -1,17 +1,17 @@
 import { GameMode } from "../../generated/prisma/client";
-import { prisma } from "../lib/prisma";
-import { redisClient, leaderBoardKeys } from "../lib/redis";
-import ApiError from "../utils/ApiError";
 import {
-	GAME_MODE_DURATION_MS,
 	END_SESSION_GRACE_MS,
+	GAME_MODE_DURATION_MS,
 	MAX_HUMAN_CPS,
 } from "../config/gameMode";
+import { prisma } from "../lib/prisma";
+import { leaderBoardKeys, redisClient } from "../lib/redis";
+import ApiError from "../utils/ApiError";
 import {
-	todayKey,
 	isoWeekKey,
 	secondsUntilNextUtcDay,
 	secondsUntilNextUtcWeek,
+	todayKey,
 } from "../utils/periodKeys";
 
 const startGameSession = async (userId: string, gameMode: GameMode) => {
@@ -215,59 +215,71 @@ const getLeaderboard = async (
 		0,
 		limit - 1,
 		"WITHSCORES",
-    );
+	);
 
-    const userIds: string[] = [];
-    const scoreByUserId: Record<string, number> = {};
+	const userIds: string[] = [];
+	const scoreByUserId: Record<string, number> = {};
 
-    for (let i = 0; i < leaderboard.length; i += 2) {
-        userIds.push(leaderboard[i]);
-        scoreByUserId[leaderboard[i]] = parseInt(leaderboard[i + 1], 10);
-    }
+	for (let i = 0; i < leaderboard.length; i += 2) {
+		const userId = leaderboard[i];
+		const score = leaderboard[i + 1];
 
-    if (userIds.length === 0) {
-        return [];
-    }
+		if (userId === undefined || score === undefined) {
+			continue;
+		}
 
-    const users = await prisma.user.findMany({
-        where: { id: { in: userIds } },
-        select: { id: true, username: true },
-    });
+		userIds.push(userId);
+		scoreByUserId[userId] = parseInt(score, 10);
+	}
 
-    const userMap = new Map(users.map(user => [user.id, user.username]));
+	if (userIds.length === 0) {
+		return [];
+	}
 
-    return userIds.map((userId, index) => ({
-        rank: index + 1,
-        userId,
-        username: userMap.get(userId) || "Unknown",
-        score: scoreByUserId[userId],
-    }));
+	const users = await prisma.user.findMany({
+		where: { id: { in: userIds } },
+		select: { id: true, username: true },
+	});
+
+	const userMap = new Map(users.map((user) => [user.id, user.username]));
+
+	return userIds.map((userId, index) => ({
+		rank: index + 1,
+		userId,
+		username: userMap.get(userId) || "Unknown",
+		score: scoreByUserId[userId],
+	}));
 };
 
 const getUserRank = async (
-    userId: string,
-    mode: GameMode,
-    period: "daily" | "weekly" | "global",
-) => { 
-    const key =
+	userId: string,
+	mode: GameMode,
+	period: "daily" | "weekly" | "global",
+) => {
+	const key =
 		period === "daily"
 			? leaderBoardKeys.daily(mode, todayKey())
 			: period === "weekly"
 				? leaderBoardKeys.weekly(mode, isoWeekKey())
-                : leaderBoardKeys.global(mode);
+				: leaderBoardKeys.global(mode);
 
-    const rank = await redisClient.zrevrank(key, userId);
-    const score = await redisClient.zscore(key, userId);
+	const rank = await redisClient.zrevrank(key, userId);
+	const score = await redisClient.zscore(key, userId);
 
-    if (rank === null || score === null) {
-        return null;
-    }
+	if (rank === null || score === null) {
+		return null;
+	}
 
-    return {
-        rank: rank + 1,
-        score: parseInt(score, 10),
-    };
+	return {
+		rank: rank + 1,
+		score: parseInt(score, 10),
+	};
+};
 
-}
-
-export { startGameSession, clickBatch, endGameSession, getLeaderboard, getUserRank };
+export {
+	clickBatch,
+	endGameSession,
+	getLeaderboard,
+	getUserRank,
+	startGameSession,
+};
