@@ -1,9 +1,5 @@
-import React from 'react'
-
 function Game() {
-  return (
-    <div>Game</div>
-  )
+    return <div className="col-span-6">Game</div>
 }
 
 export default Game

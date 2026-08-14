@@ -265,7 +265,6 @@ const getUserRank = async (
 
     return {
         rank: rank + 1,
-        userId,
         score: parseInt(score, 10),
     };
 
