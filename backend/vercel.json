@@ -1,0 +1,14 @@
+{
+	"version": 2,
+	"buildCommand": "bun run prisma:generate",
+	"rewrites": [
+		{
+			"source": "/api/(.*)",
+			"destination": "/api"
+		},
+		{
+			"source": "/health",
+			"destination": "/api"
+		}
+	]
+}

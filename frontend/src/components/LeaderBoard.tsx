@@ -62,7 +62,7 @@ function LeaderBoard() {
         }
 
         fetchLeaderboard()
-    }, [activeMode, activePeriod])
+    }, [])
 
     const currentModeMeta = useMemo(
         () => MODES.find((mode) => mode.key === activeMode) ?? MODES[0],
