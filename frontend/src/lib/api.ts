@@ -21,6 +21,7 @@ api.interceptors.response.use(
     (response) => response,
 
     async (error) => {
+        console.log("interceptor called")
         const originalRequest = error.config
 
         if (!error.response) {
@@ -29,6 +30,7 @@ api.interceptors.response.use(
 
         // Only handle 401 responses
         if (error.response.status !== 401) {
+            console.log("not 401 error", error.response.status)
             return Promise.reject(error)
         }
 
@@ -54,18 +56,15 @@ api.interceptors.response.use(
         }
 
         try {
-            const response = await axios.post(
-                `${api.defaults.baseURL}/auth/refresh`,
-                {
-                    refreshToken,
-                }
-            )
+            const response = await api.post("/auth/refresh", {
+                refreshToken,
+            })
 
             const {
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken,
-            } = response.data
-
+            } = response.data.data
+            console.log("New tokens received:", newAccessToken, newRefreshToken)
             localStorage.setItem("AccessToken", newAccessToken)
             localStorage.setItem("RefreshToken", newRefreshToken)
 
@@ -73,6 +72,8 @@ api.interceptors.response.use(
 
             return api(originalRequest)
         } catch (refreshError) {
+            console.error("Token refresh failed:", refreshError)
+            localStorage.removeItem("user")
             localStorage.removeItem("AccessToken")
             localStorage.removeItem("RefreshToken")
 

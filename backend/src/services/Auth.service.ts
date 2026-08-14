@@ -1,10 +1,10 @@
-import { prisma } from "../lib/prisma";
 import bcrypt from "bcrypt";
+import { prisma } from "../lib/prisma";
 import ApiError from "../utils/ApiError";
 import {
-	verifyRefreshToken,
 	signAccessToken,
 	signRefreshToken,
+	verifyRefreshToken,
 } from "../utils/jwt";
 
 const publicUserSelect = {
@@ -37,6 +37,11 @@ const signUp = async (email: string, username: string, password: string) => {
 
 	const tokens = await issueTokens(user.id, user.username);
 
+	await prisma.user.update({
+		where: { id: user.id },
+		data: { refreshToken: tokens.refreshToken },
+	});
+
 	return { user, ...tokens };
 };
 
@@ -55,12 +60,12 @@ const logIn = async (loginId: string, password: string) => {
 		throw new ApiError(400, "Invalid email/username or password");
 	}
 
-    const tokens = await issueTokens(user.id, user.username);
+	const tokens = await issueTokens(user.id, user.username);
 
-    await prisma.user.update({
-        where: { id: user.id },
-        data: { refreshToken: tokens.refreshToken },
-    });
+	await prisma.user.update({
+		where: { id: user.id },
+		data: { refreshToken: tokens.refreshToken },
+	});
 
 	const publicUser = {
 		id: user.id,
@@ -77,45 +82,42 @@ const refreshTokens = async (refreshToken: string) => {
 	let payload: { userId: string };
 	try {
 		payload = verifyRefreshToken(refreshToken);
-	} catch (err) {
+	} catch {
 		throw new ApiError(401, "Invalid refresh token");
 	}
 
-	try {
-		const user = await prisma.user.findUnique({
-			where: { id: payload.userId },
-		});
+	const user = await prisma.user.findUnique({
+		where: { id: payload.userId },
+	});
 
-		const isRefreshTokenAlive = verifyRefreshToken(user?.refreshToken || "");
-
-		if (!isRefreshTokenAlive) {
-			throw new ApiError(401, "Refresh token has expired");
-		}
-
-		if (user?.refreshToken !== refreshToken) {
-			throw new ApiError(401, "Refresh token does not match");
-		}
-
-		const tokens = await issueTokens(user.id, user.username);
-
-		await prisma.user.update({
-			where: { id: user.id },
-			data: { refreshToken: tokens.refreshToken },
-		});
-
-		const publicUser = {
-			id: user.id,
-			email: user.email,
-			username: user.username,
-			createdAt: user.createdAt,
-			updatedAt: user.updatedAt,
-		};
-
-		return { user: publicUser, ...tokens };
-
-	} catch (err) { 
-		throw new ApiError(401, "User not found");
+	if (!user || !user.refreshToken) {
+		throw new ApiError(401, "Refresh token is missing or invalid");
 	}
+
+	try {
+		const storedRefreshPayload = verifyRefreshToken(user.refreshToken);
+		if (storedRefreshPayload.userId !== payload.userId) {
+			throw new ApiError(401, "Refresh token does not match user");
+		}
+	} catch (error) {
+		if (error instanceof ApiError) {
+			throw error;
+		}
+		throw new ApiError(401, "Refresh token has expired");
+	}
+
+	if (user.refreshToken !== refreshToken) {
+		throw new ApiError(401, "Refresh token does not match");
+	}
+
+	const tokens = await issueTokens(user.id, user.username);
+
+	await prisma.user.update({
+		where: { id: user.id },
+		data: { refreshToken: tokens.refreshToken },
+	});
+
+	return { user: publicUserSelect, ...tokens };
 };
 
 const logOut = async (refreshToken: string) => {
@@ -139,4 +141,4 @@ const issueTokens = async (userId: string, username: string) => {
 	return { accessToken, refreshToken };
 };
 
-export { signUp, logIn, refreshTokens, logOut };
+export { logIn, logOut, refreshTokens, signUp };

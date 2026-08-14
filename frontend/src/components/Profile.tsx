@@ -24,6 +24,16 @@ function Profile() {
     const [userHistory, setUserHistory] = useState<UserScore[]>([])
 
     useEffect(() => {
+        console.log("componenet mounted")
+
+        // setInterval(() => { 
+        //     console.log("setTimeout Called after 30s")
+        //     api.get("/users/me/stats", {
+        //         params: { mode: "CLASSIC_60S" },
+        //     }).then((response) => { 
+        //         console.log("response after 30s", response.data.data)
+        //     })
+        // },30000)
         if (user) {
             api.get("/users/me/stats", {
                 params: { mode: "CLASSIC_60S" },
