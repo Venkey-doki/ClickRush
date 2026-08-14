@@ -18,5 +18,5 @@ export const env = {
 	jwtRefreshSecret: required("JWT_REFRESH_SECRET"),
 	accessTokenTtl: process.env.ACCESS_TOKEN_TTL ?? "15m",
 	refreshTokenTtl: process.env.REFRESH_TOKEN_TTL ?? "7d",
-	corsOrigin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+	corsOrigin:process.env.CORS_ORIGIN ?? "https://click-rush-frontend.vercel.app",
 };
