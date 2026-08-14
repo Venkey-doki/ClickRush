@@ -86,14 +86,14 @@ function LeaderBoard() {
                         </div>
                     </div>
 
-                    <Button
+                    {/* <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         className="h-7 px-2 text-[11px] text-muted-foreground"
                     >
                         Full board
-                    </Button>
+                    </Button> */}
                 </div>
 
                 <div className="mb-4 rounded-lg border border-border bg-muted p-1">

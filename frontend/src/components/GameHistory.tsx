@@ -57,14 +57,14 @@ function GameHistory() {
                         Recent games
                     </p>
                 </div>
-                <Button
+                {/* <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     className="h-7 px-2 text-[11px] text-muted-foreground"
                 >
                     View all
-                </Button>
+                </Button> */}
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col">
