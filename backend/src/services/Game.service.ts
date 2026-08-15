@@ -105,13 +105,7 @@ const endGameSession = async (userId: string, sessionId: string) => {
 		throw new ApiError(404, "Game session not found.");
 	}
 
-	if (session.status === "COMPLETED") {
-		const existing = await prisma.score.findUnique({
-			where: { sessionId },
-		});
-		if (existing) return existing;
-	}
-
+	// Always verify ownership first
 	if (session.userId !== userId) {
 		throw new ApiError(
 			403,
@@ -119,23 +113,36 @@ const endGameSession = async (userId: string, sessionId: string) => {
 		);
 	}
 
+	// Idempotency: if the request is repeated after completion,
+	// return the existing score instead of creating another one.
+	if (session.status === "COMPLETED") {
+		const existing = await prisma.score.findUnique({
+			where: { sessionId },
+		});
+
+		if (existing) {
+			return existing;
+		}
+	}
+
 	if (session.status !== "IN_PROGRESS") {
-		throw new ApiError(409, "Session is not in progress");
+		throw new ApiError(409, "Session is not in progress.");
 	}
 
 	const now = new Date();
+
 	const elapsedTime = now.getTime() - session.startedAt.getTime();
+
 	const duration = GAME_MODE_DURATION_MS[session.mode];
 
-	if (elapsedTime < duration - END_SESSION_GRACE_MS) {
-		throw new ApiError(409, "Session is still in progress");
-	}
-
+	// Prevent a delayed request from recording an unreasonable duration.
 	const actualDuration = Math.min(
 		elapsedTime,
 		duration + END_SESSION_GRACE_MS,
 	);
-	const cps = session.clickCount / (actualDuration / 1000);
+
+	const cps =
+		actualDuration > 0 ? session.clickCount / (actualDuration / 1000) : 0;
 
 	const [, score] = await prisma.$transaction([
 		prisma.gameSession.update({
@@ -146,19 +153,19 @@ const endGameSession = async (userId: string, sessionId: string) => {
 				clickCount: session.clickCount,
 			},
 		}),
+
 		prisma.score.create({
 			data: {
 				sessionId,
 				userId,
 				mode: session.mode,
 				clickCount: session.clickCount,
-				durationMs: duration,
+				durationMs: actualDuration,
 				cps,
 			},
 		}),
 	]);
 
-	// Update Redis leaderboards
 	await updateLeaderboards(userId, session.mode, score.clickCount);
 
 	return score;

@@ -1,8 +1,10 @@
 import {
     Flag,
     Gauge,
+    Loader2,
     Play,
     RefreshCw,
+    Square,
     Target,
     Timer,
     Trophy,
@@ -92,6 +94,22 @@ function Game() {
     const tickInterval = useRef<ReturnType<typeof setInterval> | null>(null)
     const pulseTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+    const [isGameActionLoading, setIsGameActionLoading] = useState(false)
+
+    const handleGameAction = async () => {
+        setIsGameActionLoading(true)
+
+        try {
+            if (gameState === "PLAYING") {
+                await stopGameSession()
+            } else {
+                await startGameSession()
+            }
+        } finally {
+            setIsGameActionLoading(false)
+        }
+    }
+
     const clearTimers = useCallback(() => {
         if (flushInterval.current) {
             clearInterval(flushInterval.current)
@@ -127,7 +145,12 @@ function Game() {
                 "/games/clicks",
                 request
             )
-            console.log("Click batch sent:", clickCount, "Server total clicks:", response.data.data.totalClicks)
+            console.log(
+                "Click batch sent:",
+                clickCount,
+                "Server total clicks:",
+                response.data.data.totalClicks
+            )
             setServerClicks(response.data.data.totalClicks)
         } catch {
             pendingClicks.current += clickCount
@@ -229,6 +252,15 @@ function Game() {
         isEnding,
         sendClickBatch,
     ])
+
+    //handle stop game when user clicks the stop button or when the game ends
+    const stopGameSession = useCallback(() => {
+        if (gameState === "PLAYING") {
+            endGameSession(sessionId.current!)
+            clearTimers()
+            setGameState("READY")
+        }
+    }, [clearTimers, gameState])
 
     const handleTap = () => {
         if (gameState !== "PLAYING") {
@@ -384,14 +416,21 @@ function Game() {
                 <div className="mt-5 flex items-center gap-2">
                     <Button
                         type="button"
-                        disabled={isBusy || gameState === "PLAYING"}
-                        onClick={() => void startGameSession()}
+                        onClick={() => void handleGameAction()}
+                        disabled={isGameActionLoading}
                         className="flex-1"
                     >
-                        {isBusy ? (
+                        {isGameActionLoading ? (
                             <>
-                                <Spinner className="h-3.5 w-3.5" />
-                                Starting...
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                {gameState === "PLAYING"
+                                    ? "Stopping..."
+                                    : "Starting..."}
+                            </>
+                        ) : gameState === "PLAYING" ? (
+                            <>
+                                <Square className="h-3.5 w-3.5" />
+                                Stop game
                             </>
                         ) : (
                             <>
