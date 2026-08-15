@@ -253,9 +253,9 @@ function Game() {
     ])
 
     //handle stop game when user clicks the stop button or when the game ends
-    const stopGameSession = useCallback(() => {
+    const stopGameSession = useCallback(async () => {
         if (gameState === "PLAYING") {
-            endGameSession(sessionId.current!)
+            await endGameSession(sessionId.current!)
             clearTimers()
             setGameState("READY")
         }
