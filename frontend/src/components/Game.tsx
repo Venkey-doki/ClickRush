@@ -393,7 +393,7 @@ function Game() {
                 <button
                     type="button"
                     onClick={handleTap}
-                    disabled={gameState !== "PLAYING"}
+                    disabled={gameState !== "PLAYING" || isBusy}
                     className={`mt-5 flex w-full flex-1 flex-col items-center justify-center gap-2 rounded-2xl border transition-all ${
                         gameState === "PLAYING"
                             ? tapPulse
