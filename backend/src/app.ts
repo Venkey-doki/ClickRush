@@ -44,3 +44,28 @@ app.listen(env.port, () => {
 });
 
 export default app;
+
+const url = `https://clickrushbackend.onrender.com/health`; // Replace with your Render URL
+const interval = 300000; // Interval in milliseconds (5 minutes)
+
+//Reloader Function
+async function reloadWebsite() {
+	try {
+		const response = await fetch(url);
+
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+
+		console.log(
+			`Reloaded at ${new Date().toISOString()}: Status Code ${response.status}`,
+		);
+	} catch (error) {
+		console.error(
+			`Error reloading at ${new Date().toISOString()}:`,
+			error instanceof Error ? error.message : error,
+		);
+	}
+}
+
+setInterval(reloadWebsite, interval);
