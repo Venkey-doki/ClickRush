@@ -74,12 +74,14 @@ function LeaderBoard() {
 
     return (
         <div className="col-span-12 m-4 md:col-span-3">
-            <div className="flex min-h-[calc(100dvh-2rem)] flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
-                <div className="mb-4 flex items-center justify-between gap-2">
+            <div className="flex h-[calc(100dvh-2rem)] min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+                {/* Header */}
+                <div className="mb-4 flex shrink-0 items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-muted text-foreground">
                             <Sparkles className="h-3.5 w-3.5" />
                         </div>
+
                         <div>
                             <p className="text-sm font-semibold text-foreground">
                                 Leaderboard
@@ -88,16 +90,17 @@ function LeaderBoard() {
                     </div>
 
                     {/* <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 px-2 text-[11px] text-muted-foreground"
-                    >
-                        Full board
-                    </Button> */}
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-[11px] text-muted-foreground"
+            >
+                Full board
+            </Button> */}
                 </div>
 
-                <div className="mb-4 rounded-lg border border-border bg-muted p-1">
+                {/* Mode selector */}
+                <div className="mb-4 shrink-0 rounded-lg border border-border bg-muted p-1">
                     <div className="grid grid-cols-3 gap-1">
                         {MODES.map((mode) => {
                             const Icon = mode.icon
@@ -122,9 +125,11 @@ function LeaderBoard() {
                     </div>
                 </div>
 
-                <div className="mb-4 flex items-center justify-between gap-2 rounded-xl border border-border bg-background/70 px-3 py-2">
+                {/* Period selector */}
+                <div className="mb-4 flex shrink-0 items-center justify-between gap-2 rounded-xl border border-border bg-background/70 px-3 py-2">
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <CurrentModeIcon className="h-3.5 w-3.5" />
+
                         <span className="text-[11px] font-medium tracking-[0.12em] uppercase">
                             {activeMode.replace("_", " ")}
                         </span>
@@ -154,9 +159,10 @@ function LeaderBoard() {
                     </div>
                 </div>
 
+                {/* Leaderboard content */}
                 <div className="flex min-h-0 flex-1 flex-col">
                     {isLoading ? (
-                        <div className="space-y-2">
+                        <div className="min-h-0 flex-1 space-y-2 overflow-hidden">
                             {Array.from({ length: 6 }).map((_, index) => (
                                 <div
                                     key={index}
@@ -164,41 +170,46 @@ function LeaderBoard() {
                                 >
                                     <div className="flex items-center gap-3">
                                         <div className="h-5 w-5 rounded-full bg-muted" />
+
                                         <div className="h-3 w-20 rounded bg-muted" />
                                     </div>
+
                                     <div className="h-3 w-12 rounded bg-muted" />
                                 </div>
                             ))}
                         </div>
                     ) : leaderboard.length === 0 ? (
-                        <div className="flex h-full items-center justify-center rounded-xl border border-dashed border-border bg-background/70 px-4 py-8 text-center text-sm text-muted-foreground">
+                        <div className="flex min-h-0 flex-1 items-center justify-center rounded-xl border border-dashed border-border bg-background/70 px-4 py-8 text-center text-sm text-muted-foreground">
                             No leaderboard data yet.
                         </div>
                     ) : (
-                        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+                        <div className="min-h-0 flex-1 scrollbar-none space-y-2 overflow-y-auto">
                             {leaderboard.map((entry, index) => (
                                 <div
                                     key={`${entry.userId}-${entry.rank}`}
                                     className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background/70 px-3 py-3"
                                 >
                                     <div className="flex min-w-0 items-center gap-3">
-                                        <div className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-muted font-mono text-[10px] font-semibold text-foreground">
+                                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border bg-muted font-mono text-[10px] font-semibold text-foreground">
                                             {index + 1}
                                         </div>
+
                                         <div className="min-w-0">
                                             <p className="truncate text-sm font-semibold text-foreground">
                                                 {entry.username}
                                             </p>
+
                                             <p className="text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
                                                 #{entry.rank}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="text-right">
+                                    <div className="shrink-0 text-right">
                                         <p className="font-mono text-sm font-semibold text-foreground">
                                             {entry.score.toLocaleString()}
                                         </p>
+
                                         <p className="text-[10px] text-muted-foreground">
                                             points
                                         </p>
@@ -207,7 +218,7 @@ function LeaderBoard() {
                             ))}
                         </div>
                     )}
-                    </div>
+                </div>
             </div>
         </div>
     )

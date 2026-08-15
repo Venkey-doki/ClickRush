@@ -50,21 +50,13 @@ function GameHistory() {
     }, [user])
 
     return (
-        <div className="m-4 flex min-h-0 flex-1 flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
-            <div className="mb-4 flex items-center justify-between gap-2">
+        <div className="m-4 flex max-h-100 min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+            <div className="mb-4 flex shrink-0 items-center justify-between gap-2">
                 <div>
                     <p className="text-sm font-semibold text-foreground">
                         Recent games
                     </p>
                 </div>
-                {/* <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 px-2 text-[11px] text-muted-foreground"
-                >
-                    View all
-                </Button> */}
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col">
@@ -73,7 +65,7 @@ function GameHistory() {
                         No games played yet.
                     </div>
                 ) : (
-                    <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+                    <div className="min-h-0 flex-1 scrollbar-none space-y-2 overflow-y-auto">
                         {userHistory.map((entry) => (
                             <div
                                 key={entry.id}
@@ -84,6 +76,7 @@ function GameHistory() {
                                         <span className="inline-flex rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium tracking-[0.12em] text-foreground uppercase">
                                             {formatModeLabel(entry.mode)}
                                         </span>
+
                                         <span className="text-[11px] text-muted-foreground">
                                             {new Date(
                                                 entry.createdAt
@@ -103,7 +96,7 @@ function GameHistory() {
                                     </div>
                                 </div>
 
-                                <div className="text-right">
+                                <div className="shrink-0 text-right">
                                     <p className="font-mono text-sm font-semibold text-foreground">
                                         #{entry.clickCount}
                                     </p>
