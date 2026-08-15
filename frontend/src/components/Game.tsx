@@ -303,7 +303,7 @@ function Game() {
 
     return (
         <div className="col-span-12 m-4 md:col-span-6">
-            <div className="flex min-h-[calc(100dvh-2rem)] flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+            <div className="flex h-full min-h-0 flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
                 <div className="mb-5 flex items-center justify-between gap-3">
                     <div>
                         <p className="text-sm font-semibold text-foreground">

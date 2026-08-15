@@ -168,7 +168,7 @@ function Profile() {
 
     return (
         <>
-            <div className="m-4 flex h-fit flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+            <div className="m-4 flex h-fit shrink-0 flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
                 <div className="flex items-center gap-3">
                     <Avatar name={user?.username || "User"} />
                     <div className="min-w-0">

@@ -1,19 +1,19 @@
-import ProfileLeaderboardHolder from "../components/ProfileLeaderboardHolder"
+import Footer from "../components/Footer"
 import Game from "../components/Game"
 import LeaderBoard from "../components/LeaderBoard"
-import Footer from "../components/Footer"
+import ProfileLeaderboardHolder from "../components/ProfileLeaderboardHolder"
 
 function HomePage() {
     return (
-        <>
-            <main className="grid min-h-screen w-full grid-cols-12">
+        <div className="flex h-dvh flex-col">
+            <main className="grid min-h-0 flex-1 grid-cols-12 overflow-hidden grid-rows-[minmax(0,1fr)]">
                 <ProfileLeaderboardHolder />
                 <Game />
                 <LeaderBoard />
-                {/* <GameHistory /> */}
             </main>
+
             <Footer />
-        </>
+        </div>
     )
 }
 

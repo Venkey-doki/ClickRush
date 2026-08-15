@@ -73,8 +73,8 @@ function LeaderBoard() {
     const CurrentModeIcon = currentModeMeta.icon
 
     return (
-        <div className="col-span-12 m-4 md:col-span-3">
-            <div className="flex h-[calc(100dvh-2rem)] min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+        <div className="col-span-12 m-4 min-h-0 md:col-span-3">
+            <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
                 {/* Header */}
                 <div className="mb-4 flex shrink-0 items-center justify-between gap-2">
                     <div className="flex items-center gap-2">

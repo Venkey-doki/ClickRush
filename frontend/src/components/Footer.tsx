@@ -15,7 +15,7 @@ const SOCIAL_LINKS = [
 
 function Footer() {
     return (
-        <footer className="mt-4 p-4 shadow-sm sm:p-5">
+        <footer className="shadow-sm mt-2">
             <div className="border-t border-border"></div>
             <div className="m-1 flex flex-col items-start justify-center gap-3 sm:flex-row sm:items-center">
                 <p className="text-xs text-muted-foreground">
