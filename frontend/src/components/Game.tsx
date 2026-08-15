@@ -24,7 +24,6 @@ import type {
     StartGameSessionResponse,
 } from "../types/game"
 import { Button } from "./ui/button"
-import { Spinner } from "./ui/spinner"
 
 const FLUSH_INTERVAL_MS = 250
 
