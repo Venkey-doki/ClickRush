@@ -37,6 +37,7 @@ function LeaderBoard() {
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
+        console.log("leaderBoard component mounted")
         const fetchLeaderboard = async () => {
             setIsLoading(true)
 
@@ -62,7 +63,7 @@ function LeaderBoard() {
         }
 
         fetchLeaderboard()
-    }, [])
+    }, [activeMode])
 
     const currentModeMeta = useMemo(
         () => MODES.find((mode) => mode.key === activeMode) ?? MODES[0],
