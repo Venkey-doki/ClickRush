@@ -55,7 +55,7 @@ export const clickBatchHandler = async (
     const totalClicks = await clickBatch(userId, sessionId, clicks);
 
     res.status(200).json(
-        new ApiResponse(true, "Click batch processed.", { totalClicks }),
+        new ApiResponse(true, "Click batch processed.", totalClicks ),
     );
 };
 

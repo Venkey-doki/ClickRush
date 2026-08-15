@@ -127,6 +127,7 @@ function Game() {
                 "/games/clicks",
                 request
             )
+            console.log("Click batch sent:", clickCount, "Server total clicks:", response.data.data.totalClicks)
             setServerClicks(response.data.data.totalClicks)
         } catch {
             pendingClicks.current += clickCount
