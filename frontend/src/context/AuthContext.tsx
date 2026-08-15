@@ -4,7 +4,7 @@ import type { AuthedUser } from "../types/user";
 interface AuthContextType {
     user: AuthedUser | null
     login: (emailOrUsername: string, password: string) => Promise<void>
-    signup: (username: string, email: string, password: string) => Promise<void>
+    signup: (email: string, username: string, password: string) => Promise<void>
     logout: (refreshToken: string) => void
 }
 
@@ -38,9 +38,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    async function signup(username: string, email: string, password: string) {
+    async function signup(email: string, username: string, password: string) {
         try {
-            const response = await api.post("/auth/signup", { username, email, password });
+            const response = await api.post("/auth/signup", { email, username, password });
             const { user, accessToken, refreshToken } = response.data.data;
             persist(user, accessToken, refreshToken);
         } catch (error) {

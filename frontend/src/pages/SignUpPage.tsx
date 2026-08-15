@@ -21,7 +21,7 @@ function SignUpPage() {
 	const handleSignup = async () => {
 		try {
 			setLoading(true)
-			setError(null)
+            setError(null)
 			await signup(emailId, userName, password)
 			navigate("/")
 		} catch (error: any) {
@@ -75,7 +75,7 @@ function SignUpPage() {
                             className="mb-4"
                             ref={userNameRef}
                             type="text"
-                            placeholder="UserName"
+                            placeholder="minimum 3 characters AlphaNumeric and Underscore"
                             id="UserName"
                             onChange={(e) => setUserName(e.target.value)}
                         />
@@ -87,7 +87,7 @@ function SignUpPage() {
                             className="mb-4"
                             ref={passwordRef}
                             type="password"
-                            placeholder="Password"
+                            placeholder="Password 8 characters minimum"
                             id="Password"
                             onChange={(e) => setPassword(e.target.value)}
                         />
