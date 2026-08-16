@@ -302,8 +302,8 @@ function Game() {
     const isBusy = gameState === "LOADING" || isEnding
 
     return (
-        <div className="col-span-12 m-4 md:col-span-6">
-            <div className="flex h-full min-h-0 flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+        <div className="order-1 m-4 md:order-0 md:col-span-6">
+            <div className="flex flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6 md:h-full md:min-h-0">
                 <div className="mb-5 flex items-center justify-between gap-3">
                     <div>
                         <p className="text-sm font-semibold text-foreground">

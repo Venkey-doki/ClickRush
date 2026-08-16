@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoutes from './components/ProtectedRoutes';
-import { HomePage, LoginPage, SignUpPage } from './pages';
+import { HomePage, LoginPage, SignUpPage,LandingPage } from './pages';
 
 
 export function App() {
@@ -8,8 +8,9 @@ export function App() {
     <Router>
       <Routes>
         <Route element={<ProtectedRoutes />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/Dashboard" element={<HomePage />} />
         </Route>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
       </Routes>

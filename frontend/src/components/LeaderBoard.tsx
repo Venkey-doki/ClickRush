@@ -73,8 +73,8 @@ function LeaderBoard() {
     const CurrentModeIcon = currentModeMeta.icon
 
     return (
-        <div className="col-span-12 m-4 min-h-0 md:col-span-3">
-            <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+        <div className="order-2 m-4 md:order-0 md:col-span-3 md:min-h-0">
+            <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6 md:h-full md:min-h-0">
                 {/* Header */}
                 <div className="mb-4 flex shrink-0 items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -126,7 +126,7 @@ function LeaderBoard() {
                 </div>
 
                 {/* Period selector */}
-                <div className="mb-4 flex shrink-0 items-center justify-between gap-2 rounded-xl border border-border bg-background/70 px-3 py-2">
+                <div className="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-background/70 px-3 py-2">
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <CurrentModeIcon className="h-3.5 w-3.5" />
 
@@ -160,7 +160,7 @@ function LeaderBoard() {
                 </div>
 
                 {/* Leaderboard content */}
-                <div className="flex min-h-0 flex-1 flex-col">
+                <div className="flex flex-col md:min-h-0 md:flex-1">
                     {isLoading ? (
                         <div className="min-h-0 flex-1 space-y-2 overflow-hidden">
                             {Array.from({ length: 6 }).map((_, index) => (

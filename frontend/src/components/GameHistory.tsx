@@ -50,7 +50,7 @@ function GameHistory() {
     }, [user])
 
     return (
-        <div className="m-4 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+        <div className="m-4 flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6 md:min-h-0 md:flex-1">
             <div className="mb-4 flex shrink-0 items-center justify-between gap-2">
                 <div>
                     <p className="text-sm font-semibold text-foreground">
@@ -59,13 +59,13 @@ function GameHistory() {
                 </div>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className="flex flex-col overflow-hidden md:min-h-0 md:flex-1">
                 {!userHistory.length ? (
                     <div className="flex min-h-0 flex-1 items-center justify-center rounded-xl border border-dashed border-border bg-background/70 px-4 py-8 text-center text-sm text-muted-foreground">
                         No games played yet.
                     </div>
                 ) : (
-                    <div className="min-h-0 flex-1 scrollbar-none space-y-2 overflow-y-auto">
+                    <div className="max-h-64 scrollbar-none space-y-2 overflow-y-auto md:max-h-none md:min-h-0 md:flex-1">
                         {userHistory.map((entry) => (
                             <div
                                 key={entry.id}

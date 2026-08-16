@@ -5,8 +5,8 @@ import ProfileLeaderboardHolder from "../components/ProfileLeaderboardHolder"
 
 function HomePage() {
     return (
-        <div className="flex h-dvh flex-col">
-            <main className="grid min-h-0 flex-1 grid-cols-12 overflow-hidden grid-rows-[minmax(0,1fr)]">
+        <div className="flex min-h-dvh flex-col md:h-dvh md:overflow-hidden">
+            <main className="flex flex-1 flex-col md:grid md:min-h-0 md:grid-cols-12 md:grid-rows-[minmax(0,1fr)] md:overflow-hidden">
                 <ProfileLeaderboardHolder />
                 <Game />
                 <LeaderBoard />
