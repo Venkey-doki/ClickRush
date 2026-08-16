@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/ui/spinner"
 import {
     ArrowLeft,
     Eye,
@@ -9,12 +10,13 @@ import {
 } from "lucide-react"
 import { useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
 import AuthBackground from "../components/AuthBackground"
-import { Label } from "../components/ui/label"
-import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
+import { useAuth } from "../context/AuthContext"
+import { getApiErrorMessage } from "../lib/api"
+import { validateLoginPayload } from "../lib/validation"
 
 function LoginPage() {
     const [loginId, setLoginId] = useState("")
@@ -28,15 +30,25 @@ function LoginPage() {
     const [loading, setLoading] = useState(false)
 
     const handleLogin = async () => {
+        const validation = validateLoginPayload({
+            loginId,
+            password,
+        })
+
+        if (!validation.valid) {
+            setError(
+                validation.message ?? "Please check your details and try again."
+            )
+            return
+        }
+
         try {
             setLoading(true)
             setError(null)
-            await login(loginId, password)
+            await login(validation.data.loginId, validation.data.password)
             navigate("/Dashboard")
         } catch (err) {
-            setError(
-                "Login failed. Please check your credentials and try again."
-            )
+            setError(getApiErrorMessage(err))
         } finally {
             setLoading(false)
         }
@@ -106,9 +118,7 @@ function LoginPage() {
                                     placeholder="you@example.com"
                                     id="UserNameOrEmail"
                                     autoComplete="username"
-                                    onChange={(e) =>
-                                        setLoginId(e.target.value)
-                                    }
+                                    onChange={(e) => setLoginId(e.target.value)}
                                     onKeyDown={handleKeyDown}
                                 />
                             </div>
@@ -135,9 +145,7 @@ function LoginPage() {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        setShowPassword((v) => !v)
-                                    }
+                                    onClick={() => setShowPassword((v) => !v)}
                                     className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     aria-label={
                                         showPassword
@@ -171,8 +179,7 @@ function LoginPage() {
                 </div>
 
                 <p className="mt-6 text-center text-xs text-muted-foreground">
-                    By continuing you agree to ClickRush's fair-play
-                    guidelines.
+                    By continuing you agree to ClickRush's fair-play guidelines.
                 </p>
             </div>
         </section>

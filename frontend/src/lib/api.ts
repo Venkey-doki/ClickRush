@@ -1,7 +1,82 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios"
+import type { ApiErrorPayload } from "../types/apiError"
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
     _retry?: boolean
+}
+
+export const getApiErrorMessage = (error: unknown): string => {
+    if (typeof error !== "object" || error === null) {
+        return "Something went wrong. Please try again."
+    }
+
+    const maybeError = error as {
+        response?: {
+            status?: number
+            data?: Partial<ApiErrorPayload> & {
+                message?: string
+                error?: {
+                    details?: Array<{ field?: string; message?: string }>
+                    code?: string
+                }
+            }
+        }
+        message?: string
+    }
+
+    const status = maybeError.response?.status
+    const serverMessage = maybeError.response?.data?.message
+    const details = maybeError.response?.data?.error?.details ?? []
+    const fieldSpecificMessage = details.find(
+        (detail) => typeof detail?.message === "string" && detail.message.trim()
+    )
+
+    if (status && status >= 400 && status < 500) {
+        if (fieldSpecificMessage?.message) {
+            const fieldName = fieldSpecificMessage.field
+            const message = fieldSpecificMessage.message
+
+            if (fieldName) {
+                const normalizedField = fieldName
+                    .split(".")
+                    .at(-1)
+                    ?.replace(/_/g, " ")
+                    ?.replace(/\b\w/g, (char) => char.toUpperCase())
+
+                if (normalizedField && message.toLowerCase().includes("only")) {
+                    return `${normalizedField} should contain only letters, numbers, and underscores. No spaces or special symbols.`
+                }
+
+                return `${normalizedField ?? "Field"} ${message.toLowerCase()}`
+            }
+
+            return message
+        }
+
+        if (serverMessage && serverMessage !== "Internal Server Error")
+            return serverMessage
+
+        if (status === 401)
+            return "Your session has expired. Please log in again."
+        if (status === 403) return "You do not have permission to do that."
+        if (status === 404) return "We couldn't find that resource."
+        if (status === 409)
+            return "This action can't be completed right now. Please try again."
+        if (status === 422)
+            return "Please check the information you entered and try again."
+
+        return "Please check your input and try again."
+    }
+
+    if (status && status >= 500) {
+        return "Something went wrong. Please try again."
+    }
+
+    if (typeof maybeError.message === "string" && maybeError.message.trim()) {
+        return maybeError.message
+    }
+
+    return "Something went wrong. Please try again."
 }
 
 const api = axios.create({

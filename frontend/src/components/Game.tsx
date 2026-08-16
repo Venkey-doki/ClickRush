@@ -11,7 +11,7 @@ import {
     Zap,
 } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
-import api from "../lib/api"
+import api, { getApiErrorMessage } from "../lib/api"
 import type {
     ApiResponse,
     ClickBatchRequest,
@@ -49,22 +49,7 @@ const MODE_META: Record<
 }
 
 function toErrorMessage(error: unknown): string {
-    if (typeof error === "object" && error !== null) {
-        const maybeError = error as {
-            response?: { data?: { message?: string } }
-            message?: string
-        }
-
-        if (maybeError.response?.data?.message) {
-            return maybeError.response.data.message
-        }
-
-        if (maybeError.message) {
-            return maybeError.message
-        }
-    }
-
-    return "Something went wrong. Please try again."
+    return getApiErrorMessage(error)
 }
 
 function formatMode(mode: GameMode): string {

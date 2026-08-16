@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/ui/spinner"
 import {
     ArrowLeft,
     AtSign,
@@ -9,12 +10,13 @@ import {
 } from "lucide-react"
 import { useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/AuthContext"
 import AuthBackground from "../components/AuthBackground"
-import { Label } from "../components/ui/label"
-import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
-import { Spinner } from "@/components/ui/spinner"
+import { Input } from "../components/ui/input"
+import { Label } from "../components/ui/label"
+import { useAuth } from "../context/AuthContext"
+import { getApiErrorMessage } from "../lib/api"
+import { validateSignupPayload } from "../lib/validation"
 
 function SignUpPage() {
     const [emailId, setEmailId] = useState("")
@@ -30,13 +32,30 @@ function SignUpPage() {
     const [loading, setLoading] = useState(false)
 
     const handleSignup = async () => {
+        const validation = validateSignupPayload({
+            email: emailId,
+            username: userName,
+            password,
+        })
+
+        if (!validation.valid) {
+            setError(
+                validation.message ?? "Please check your details and try again."
+            )
+            return
+        }
+
         try {
             setLoading(true)
             setError(null)
-            await signup(emailId, userName, password)
+            await signup(
+                validation.data.email,
+                validation.data.username,
+                validation.data.password
+            )
             navigate("/Dashboard")
-        } catch (error: any) {
-            setError(error.message)
+        } catch (error) {
+            setError(getApiErrorMessage(error))
         } finally {
             setLoading(false)
         }
@@ -103,9 +122,7 @@ function SignUpPage() {
                                     placeholder="you@example.com"
                                     id="Email"
                                     autoComplete="email"
-                                    onChange={(e) =>
-                                        setEmailId(e.target.value)
-                                    }
+                                    onChange={(e) => setEmailId(e.target.value)}
                                     onKeyDown={handleKeyDown}
                                 />
                             </div>
@@ -158,9 +175,7 @@ function SignUpPage() {
                                 />
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        setShowPassword((v) => !v)
-                                    }
+                                    onClick={() => setShowPassword((v) => !v)}
                                     className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     aria-label={
                                         showPassword
@@ -197,8 +212,7 @@ function SignUpPage() {
                 </div>
 
                 <p className="mt-6 text-center text-xs text-muted-foreground">
-                    By continuing you agree to ClickRush's fair-play
-                    guidelines.
+                    By continuing you agree to ClickRush's fair-play guidelines.
                 </p>
             </div>
         </section>
