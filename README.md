@@ -9,8 +9,8 @@ The project was built as a full-stack engineering assignment with a focus on mor
 ## Links
 
 * **GitHub Repository:** https://github.com/Venkey-doki/ClickRush
-* **Live Demo:** `YOUR_DEPLOYED_FRONTEND_URL`
-* **Demo Video:** `YOUR_LOOM_URL`
+* **Live Demo:** [ClickRush - Click Game](https://click-rush-frontend.vercel.app/)
+* **Demo Video:** [LOOM Recoding](https://www.loom.com/share/cc04df1500994d3b97901c956d9edc7b)
 
 > Replace the two placeholders above with the deployed application URL and Loom/demo video URL before submitting the assignment.
 
