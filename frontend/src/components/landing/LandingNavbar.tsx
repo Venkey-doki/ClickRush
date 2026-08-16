@@ -1,7 +1,9 @@
-import { Menu, MousePointerClick, X } from "lucide-react"
+import { ArrowRight, Menu, Moon, MousePointerClick, Sun, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "../ui/button"
+import { useAuth } from "@/context/AuthContext"
+import { useTheme } from "../theme-provider"
 
 const NAV_LINKS = [
     { label: "How it works", href: "#how-it-works" },
@@ -11,8 +13,10 @@ const NAV_LINKS = [
 ] as const
 
 function LandingNavbar() {
+    const { user } = useAuth()
     const [scrolled, setScrolled] = useState(false)
     const [mobileOpen, setMobileOpen] = useState(false)
+    const { theme, setTheme } = useTheme()
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 8)
@@ -20,6 +24,10 @@ function LandingNavbar() {
         window.addEventListener("scroll", onScroll, { passive: true })
         return () => window.removeEventListener("scroll", onScroll)
     }, [])
+
+    const toggleTheme = () => {
+        setTheme(theme === "dark" ? "light" : "dark")
+    }
 
     return (
         <header
@@ -50,16 +58,53 @@ function LandingNavbar() {
                         </a>
                     ))}
                 </nav>
-
                 <div className="hidden items-center gap-2 md:flex">
-                    <Button variant="ghost" size="sm">
-                        <Link to="/login">Log in</Link>
-                    </Button>
-                    <Button size="sm" className="group relative overflow-hidden">
-                        <Link to="/signup">
-                            <span className="relative z-10">Play free</span>
-                        </Link>
-                    </Button>
+                    <div className="ml-auto flex items-center gap-2">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={toggleTheme}
+                            className="rounded-full border border-border bg-background text-foreground shadow-sm hover:bg-muted hover:text-foreground"
+                            aria-label="Toggle theme"
+                        >
+                            {theme === "dark" ? (
+                                <Sun className="h-3.5 w-3.5" />
+                            ) : (
+                                <Moon className="h-3.5 w-3.5" />
+                            )}
+                        </Button>
+                    </div>
+
+                    {user ? (
+                        <Button
+                            size="sm"
+                            className="hidden items-center gap-2 md:flex"
+                        >
+                            <Link to="/dashboard">
+                                <span className="relative z-10">
+                                    Play Arena
+                                </span>
+                            </Link>
+                            <ArrowRight className="inline h-3 w-4 transition-transform group-hover:translate-x-0.5" />
+                        </Button>
+                    ) : (
+                        <div className="hidden items-center gap-2 md:flex">
+                            <Button variant="ghost" size="sm">
+                                <Link to="/login">Log in</Link>
+                            </Button>
+                            <Button
+                                size="sm"
+                                className="group relative overflow-hidden"
+                            >
+                                <Link to="/signup">
+                                    <span className="relative z-10">
+                                        Play free
+                                    </span>
+                                </Link>
+                            </Button>
+                        </div>
+                    )}
                 </div>
 
                 <button
@@ -90,13 +135,53 @@ function LandingNavbar() {
                             </a>
                         ))}
                     </nav>
-                    <div className="mt-3 flex flex-col gap-2">
-                        <Button variant="outline" className="w-full">
-                            <Link to="/login">Log in</Link>
-                        </Button>
-                        <Button className="w-full">
-                            <Link to="/signup">Play free</Link>
-                        </Button>
+                    <div className="px-3 items-center gap-2 md:flex">
+                        <div className=" py-2 flex items-center gap-2">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-sm"
+                                onClick={toggleTheme}
+                                className="rounded-full border border-border bg-background text-foreground shadow-sm hover:bg-muted hover:text-foreground"
+                                aria-label="Toggle theme"
+                            >
+                                {theme === "dark" ? (
+                                    <Sun className="h-3.5 w-3.5" />
+                                ) : (
+                                    <Moon className="h-3.5 w-3.5" />
+                                )}
+                            </Button>
+                        </div>
+
+                        {user ? (
+                            <Button
+                                size="sm"
+                                className="items-center gap-2 md:flex"
+                            >
+                                <Link to="/dashboard">
+                                    <span className="relative z-10">
+                                        Play Arena
+                                    </span>
+                                </Link>
+                                <ArrowRight className="inline h-3 w-4 transition-transform group-hover:translate-x-0.5" />
+                            </Button>
+                        ) : (
+                            <div className="hidden items-center gap-2 md:flex">
+                                <Button variant="ghost" size="sm">
+                                    <Link to="/login">Log in</Link>
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    className="group relative overflow-hidden"
+                                >
+                                    <Link to="/signup">
+                                        <span className="relative z-10">
+                                            Play free
+                                        </span>
+                                    </Link>
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
