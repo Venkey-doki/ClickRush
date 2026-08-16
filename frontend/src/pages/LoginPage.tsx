@@ -32,7 +32,7 @@ function LoginPage() {
             setLoading(true)
             setError(null)
             await login(loginId, password)
-            navigate("/")
+            navigate("/Dashboard")
         } catch (err) {
             setError(
                 "Login failed. Please check your credentials and try again."

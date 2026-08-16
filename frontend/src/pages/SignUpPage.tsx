@@ -34,7 +34,7 @@ function SignUpPage() {
             setLoading(true)
             setError(null)
             await signup(emailId, userName, password)
-            navigate("/")
+            navigate("/Dashboard")
         } catch (error: any) {
             setError(error.message)
         } finally {
